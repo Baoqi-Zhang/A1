@@ -190,7 +190,7 @@ plt.show()
 # 
 # **[3 marks]**
 
-# In[108]:
+# In[38]:
 
 
 # For use of random, round and split function from numpy module 
@@ -262,7 +262,7 @@ print(np.round(A, 3))
 # 
 # **[3 marks]**
 
-# In[110]:
+# In[39]:
 
 
 import numpy as np
@@ -444,7 +444,7 @@ for i in range(len(ns)):
 # 
 # **[3 marks]**
 
-# In[ ]:
+# In[36]:
 
 
 from mpl_toolkits import mplot3d
@@ -469,7 +469,6 @@ ax = plt.axes(projection='3d')
 ax.plot_surface(x, y, I,cmap='viridis', edgecolor='none')
 # Label the title of the graph
 ax.set_title('Surface plot',fontsize=25)
-ax.set_labelx('x')
 plt.show()
 
 
@@ -485,7 +484,7 @@ plt.show()
 # 
 # **[3 marks]**
 
-# In[34]:
+# In[37]:
 
 
 import numpy as np
