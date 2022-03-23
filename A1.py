@@ -156,7 +156,9 @@ plt.show()
 
 # Formula 2 is the most efficient way of calculating an approximation of pi since the absolute error is decreasing constantly with a relatively large gradient compared with the other two formulas. It does not converge in the interval[0,30] These two facts tell me that using formula 2, the difference between the estimation and true value of pi will become Negligibly small in the end.
 # 
-# The other two are converging over time and the errors are still quite obvious at the end of the plot.
+# The other two formulas are experiencing similar trend in the whole process: converging over time. The errors are still quite obvious at the end of the plot.
+# 
+# Another interesting point is that although the formula 2 is quite far from the actual value of pi at first, its approximation finally exceeds the other two approximation. 
 # 
 
 # ---
@@ -421,7 +423,7 @@ for i in range(len(ns)):
 # 
 # (2) When the scale of the problem increases, the time complexity of both algorithms will increase. However, the full system formula increases in square and the sub-system algorithm increases in linear. Therefore, in the case of large n, the latter is more appropriate.
 # 
-# (3) According the subplot 4, the seperately calculated formula increases sharply in the interval(25,35) and remains increasing after 35, this is because for our DIY formula, it takes shorter time solving easy matrics, but for more complexed ones, the time recurring the loop will be increasingly longer as size of system increase. For the linsolve_block_diag(blocks,b), it actually ignores the zero element in the diagnal matrix. 
+# (3) According the subplot 4, the seperately calculated formula increases sharply in the interval(25,40) and remains increasing after 35, this is because for our DIY formula, it takes shorter time solving easy matrics, but for more complexed ones, the time recurring the loop will be increasingly longer as size of system increase. For the linsolve_block_diag(blocks,b), it actually ignores the zero element in the diagnal matrix. 
 # 
 # 
 # 
@@ -442,7 +444,7 @@ for i in range(len(ns)):
 # 
 # **[3 marks]**
 
-# In[116]:
+# In[ ]:
 
 
 from mpl_toolkits import mplot3d
@@ -457,11 +459,17 @@ y = x.copy().T # transpose
 #I = s.integrate.dblquad
 I = np.sin(x)*np.cos(y/5)
 
+# Plot the figure
 fig = plt.figure()
+fig.set_size_inches(14,20)
+# Plot 3-dimension axis
 ax = plt.axes(projection='3d')
 
+# Surface plot function 
 ax.plot_surface(x, y, I,cmap='viridis', edgecolor='none')
-ax.set_title('Surface plot')
+# Label the title of the graph
+ax.set_title('Surface plot',fontsize=25)
+ax.set_labelx('x')
 plt.show()
 
 
@@ -477,7 +485,7 @@ plt.show()
 # 
 # **[3 marks]**
 
-# In[124]:
+# In[34]:
 
 
 import numpy as np
@@ -503,19 +511,20 @@ def midpoint_I(D, N, M):
     # Generate a loop from i=0 to i=M        
         for j in range(M):
            
+            # Present x and y function where c and a is the initial value of the function
             y = c + dy/2 + j*dy
             x = a + dx/2 + i*dx
             
             # Generate the function of I    
-            I =  I +(np.sin(x)*np.cos(y/5)) *dx*dy
+            I =  I + (np.sin(x)*np.cos(y/5)) * dx * dy
             
             
     return  I
 
 
 # Check with exact values
-print(midpoint_I([1,2,3,4],2000,2000))
-print(5*(-np.cos(2)+np.cos(1))*(np.sin(4/5)-np.sin(3/5)))
+print(midpoint_I([7,8,9,10],2000,2000))
+print(5*(-np.cos(8)+np.cos(7))*(np.sin(10/5)-np.sin(9/5)))
 
 
 # **3.3** Consider now the domain $\mathcal{D} = (0, 5)\times(0, 5)$. Compute the absolute error between the exact integral $I$ and the approximated integral computed with your `midpoint_I()` function from **3.2**, with all combinations of $M = 5, 10, 15, \dots, 300$ and $N = 5, 10, 15, \dots, 300$.
@@ -524,31 +533,36 @@ print(5*(-np.cos(2)+np.cos(1))*(np.sin(4/5)-np.sin(3/5)))
 # 
 # **[3 marks]**
 
-# In[121]:
+# In[26]:
 
 
 import numpy as np
 
 # Set value of elements in D
+
+# lower bound of domains
 a=c=0
+# upper bound of domains
 b=d=5
+# Create a list that contains limits of domains for dx and dy
 D = [a,b,c,d]
 
-# Create ns and ms which are the lists with all combinations of  𝑀=5,10,15,…,300  and  𝑁=5,10,15,…,300,using linspace to seperate them in equal sapce
-ns = np.linspace(5,300,60,dtype = int)
-ms = np.linspace(5,300,60,dtype = int)
-e = np.zeros([len(ns),len(ms)])
+# Create ns and ms which are the lists with all combinations of  𝑀=5,10,15,…,300  and  𝑁=5,10,15,…,300,using linspace to seperate elements in equal sapce
+Ns = np.linspace(5,300,60,dtype = int)
+Ms = np.linspace(5,300,60,dtype = int)
+# The height values over which the contour is drawn.
+h = np.zeros([len(ns),len(ms)])
 
 # Generate loop of each n in ns
-for n in ns:
+for n in Ns:
     # Generate loop of each m in ms
-    for m in ms:
+    for m in Ms:
     
         approximation_I = midpoint_I(D,n,m)
 
         exact_I =  5*(-np.cos(b)+np.cos(a))*(np.sin(d/5)-np.sin(c/5))
     
-        e[int(n/5)-1][int(m/5)-1] = abs(approximation_I-exact_I)
+        h[int(n/5)-1][int(m/5)-1] = abs(approximation_I-exact_I)
     
 
 
@@ -561,7 +575,7 @@ for n in ns:
 # 
 # **[3 marks]**
 
-# In[122]:
+# In[33]:
 
 
 from matplotlib import cm
@@ -570,7 +584,7 @@ from matplotlib import cm
 
 
 # Plot using the contourf function with contour levels (10−𝑘,𝑘=1,2,…,5)
-cs = plt.contourf(ns,ms,e,levels=[10e-05,10e-04,10e-03,10e-02,10e-01],colors=['#0F2EA7','#084DA7','#0875A7','#039CA7','#05A79A'],extend = 'both')
+cs = plt.contourf(Ns,Ms,h,levels=[10e-05,10e-04,10e-03,10e-02,10e-01],colors=['#0F2EA7','#084DA7','#0875A7','#039CA7','#05A79A'],extend = 'both')
 
 # color that exceeds the highest contour line
 cs.cmap.set_over('#185F88')
@@ -580,14 +594,15 @@ cs.cmap.set_under('#3C0788')
 
 
 
-
 # Label the sticks of each value on the x-axis and y-axis
-plt.xticks(fontsize=15)
-plt.yticks(fontsize=15)
-plt.xlabel('N')
-plt.ylabel('M')
+plt.xticks(fontsize=20)
+plt.yticks(fontsize=20)
+# Label the x & y axis
+plt.xlabel('N',fontsize = 20)
+plt.ylabel('M',fontsize = 20)
 cs.changed()
 
+#show the graph
 plt.show()
 
 
@@ -597,9 +612,11 @@ plt.show()
 
 # The error decreases as M and N increase as much as possible. This also shows that the smaller the area, the less error it gives.
 # 
-# By comparing with sin(x) and cos(y/5), if the precision of sin(x) wants to be approached to cos(x/5) there should be more points to implement it. We can also see that m let the rate of decrease of error be more obvious. Therefore if we want to minimize the error, we should input as many points as we can.
+# By comparing with sin(x) and cos(y/5), if the precision of sin(x) wants to be approached to cos(x/5) there should be more points added to implement it. We can also see that m let the rate of decrease of error be more obvious. Therefore if we want to minimize the error, we should input as many points as we can.
 # 
-# If D should be partitioned to approximate I with an error of at most 10−4, M should be approaching 60 or lower while N should be about to approach 200 or higher.
+# If D should be partitioned to approximate I with an error of at most 10−4, from the lower purple edge, we can conclude that N should be approaching approximately 60 or lower while M should be approaching about 200 or higher.
+# 
+# About the symmetry: From the graph, we can see that the symmetry area shows that the less the coutour level, there is more symmetry trend shown and vice versa.
 # 
 
 # In[ ]:
